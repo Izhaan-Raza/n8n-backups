@@ -1,0 +1,408 @@
+{
+  "name": "gmail summary",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -688,
+        240
+      ],
+      "id": "423e57ce-615f-41e5-9693-f63a2112297f",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "5nMwzrgGo1dApjoQ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.text }} ",
+        "categories": {
+          "categories": [
+            {
+              "category": "class",
+              "description": "class related notification like quiz and class timing changes"
+            },
+            {
+              "category": "None",
+              "description": "if it the email doesnt fall under any category just pass in this one "
+            },
+            {
+              "category": "Seminar",
+              "description": "related to guest lectures and seminars"
+            },
+            {
+              "category": "FFCS",
+              "description": "mail related to Add and Drop, FFCS, Credits, course registrations, added slots or removed alotes"
+            },
+            {
+              "category": "Maintenance",
+              "description": "anything related to maitainece hostel or data centere or electriccity or whatever"
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "Please classify the text provided by the user into one of the following categories: {categories}, and use the provided formatting instructions below. Don't explain, and only output the json."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        384
+      ],
+      "id": "204fb2ef-c831-4fa1-b9a1-d4d25266a039",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        704
+      ],
+      "id": "d572d2b3-b1d2-439f-886c-c1c7e1d994ec",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EDOdYOO2PxpLEDJ2",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_1534721908285314719"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "08a1e734-cd49-4836-ad11-6149e6b2cca1",
+      "name": "Add label to message",
+      "webhookId": "a3c9ec3f-d6f1-40bd-b40e-8e2abd016c8f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "5nMwzrgGo1dApjoQ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_7311635614859080049"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        384
+      ],
+      "id": "01de68f2-9aeb-410a-831e-4949b204e8a4",
+      "name": "Add label to message1",
+      "webhookId": "886c3d69-e351-4cd4-a9c9-9e1e281e0db5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "5nMwzrgGo1dApjoQ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_5501844122902019494"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        768
+      ],
+      "id": "fa340c5e-6f31-43ca-91c7-48704512ee22",
+      "name": "Add label to message2",
+      "webhookId": "1e42d821-9def-4056-9cc5-58cf0d52cd6e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "5nMwzrgGo1dApjoQ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_6841757415161477148"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        576
+      ],
+      "id": "ef56f29f-fd6b-441f-91aa-c4fa85740063",
+      "name": "Add label to message3",
+      "webhookId": "0f4634c0-07a8-4650-be7c-b48972a8b25b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "5nMwzrgGo1dApjoQ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a highly efficient AI assistant for a busy university student. Your task is to analyze the content of a university email and generate a concise, 4-5 line summary. This summary will be sent as a phone notification, so it must be easy to read and understand at a glance.\n\nFollow these rules precisely:\n\n**1. IMMEDIATE ATTENTION RULE:**\nFirst, scan the email for any urgent, time-sensitive tasks. If the email requires the student to fill out a form, complete a survey, pay a fee, register for an event, or contains a hard deadline, your summary's **very first line** MUST be one of the following, followed by the specific action:\n\n* `**URGENT ACTION REQUIRED:**` (for mandatory forms, fee payments, etc.)\n* `**DEADLINE APPROACHING:**` (for assignments, project submissions)\n* `**RSVP / REGISTRATION NEEDED:**` (for events, workshops, sign-ups)\n\n**2. STANDARD SUMMARY STRUCTURE:**\nIf the email does not contain an immediate action item, summarize it following this 4-line format:\n\n* **Line 1: Source & Subject:** State who it's from and the main topic.\n    * *Example: `Update from Prof. Davis (CHEM 101)`*\n* **Line 2: Core Information:** What is the single most important piece of information?\n    * *Example: `This week's lab session has been cancelled.`*\n* **Line 3: Key Details:** Provide the most relevant supporting detail or reason.\n    * *Example: `A make-up session is scheduled for next Monday at 4 PM.`*\n* **Line 4: Next Step/FYI:** Tell the student what to do or if no action is needed.\n    * *Example: `Update your calendar. No other action needed.`*\n\n**3. WHAT TO FOCUS ON:**\n* **DO** extract: Deadlines, dates, times, locations, changes to schedules, new assignments, attachment names (e.g., \"syllabus attached\"), and direct instructions.\n* **DO NOT** include: Greetings (\"Dear student\"), closings (\"Sincerely\"), conversational filler, or redundant information.\n\n**4. LOW PRIORITY EMAILS:**\nIf the email is a general newsletter, a promotional announcement for a non-critical event, or general campus news with no required action, summarize it in 2-3 lines and end with the line:\n`FYI - Low Priority.`\nIMPORTANT: Your final summary must be a single paragraph of plain text. Do not use any markdown formatting like asterisks or newline characters. Use standard sentences.\n\n---\n**INSTRUCTION:** Now, analyze the email content provided below and generate the summary.\n\n{{ $('Gmail Trigger').item.json.text }}\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        224,
+        384
+      ],
+      "id": "47eeb9a8-ecb9-4291-bc22-0388805ba99d",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        320,
+        608
+      ],
+      "id": "2bc2da71-9478-4c0a-9fe4-524667ba34b7",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "EDOdYOO2PxpLEDJ2",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_4566477765224228942"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        192
+      ],
+      "id": "2445a296-e992-437d-bc65-e8e06dd5aaff",
+      "name": "Add label to message4",
+      "webhookId": "93b22321-9fb0-47ce-be55-baff615249ae",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "5nMwzrgGo1dApjoQ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "={{ $json.text }}\n\n||<@1016212247841874023>||",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        624,
+        384
+      ],
+      "id": "13663a97-9e2a-4561-8786-192ba4897b7e",
+      "name": "Discord",
+      "webhookId": "d5bd276b-6d62-4e99-a43f-fd936a97bfb9",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "C0EgP3OIAB6tE5bV",
+          "name": "Discord Webhook account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Add label to message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message1": {
+      "main": [
+        []
+      ]
+    },
+    "Add label to message3": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message2": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message4": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f098dd9c-261b-4745-9c49-c0a27f002e6a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "65cd38f609e85edbaf717a3a0331bdff4f424bfc479ad23407a670451bb6ef23"
+  },
+  "id": "2vlNv4AKJAOARdm5",
+  "tags": []
+}
